@@ -7,7 +7,8 @@
     "dev": "nodemon src/server.js",
     "start": "node src/server.js",
     "prisma": "prisma",
-    "build": "echo 'nothing to build'"
+    "build": "echo 'nothing to build'",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.84.0",
