@@ -1,0 +1,21 @@
+{
+  "name": "az-zaudah-backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js",
+    "prisma": "prisma",
+    "build": "echo 'nothing to build'"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.84.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.6.1",
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}

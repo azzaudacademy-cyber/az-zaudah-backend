@@ -1,0 +1,78 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// =============== MODELS ===============
+
+model User {
+  id         String          @id @default(uuid())
+  name       String
+  email      String          @unique
+  password   String
+  role       Role            @default(STUDENT)
+  createdAt  DateTime        @default(now())
+
+  // Relations
+  studentProfile StudentProfile?
+  parentChildren ParentChild[]    @relation("ParentChildren")
+  courses        Course[]        @relation("TeacherCourses")
+  enrollments    Enrollment[]
+}
+
+model StudentProfile {
+  id          String        @id @default(uuid())
+  userId      String        @unique
+  age         Int?
+  gender      String?
+  isChild     Boolean       @default(false) // true = registered by a parent
+  createdAt   DateTime      @default(now())
+
+  // Relations
+  user        User          @relation(fields: [userId], references: [id])
+  parentLink  ParentChild?  @relation("ChildParent")
+}
+
+// Link table: one PARENT user -> many StudentProfile children
+model ParentChild {
+  id              String          @id @default(uuid())
+  parentId        String
+  childProfileId  String          @unique
+  createdAt       DateTime        @default(now())
+
+  parent          User            @relation("ParentChildren", fields: [parentId], references: [id])
+  child           StudentProfile  @relation("ChildParent", fields: [childProfileId], references: [id])
+}
+
+model Course {
+  id          String        @id @default(uuid())
+  title       String
+  description String
+  teacherId   String
+  createdAt   DateTime      @default(now())
+
+  teacher     User          @relation("TeacherCourses", fields: [teacherId], references: [id])
+  enrollments Enrollment[]
+}
+
+model Enrollment {
+  id        String     @id @default(uuid())
+  userId    String
+  courseId  String
+  createdAt DateTime   @default(now())
+
+  user      User       @relation(fields: [userId], references: [id])
+  course    Course     @relation(fields: [courseId], references: [id])
+}
+
+enum Role {
+  STUDENT
+  TEACHER
+  PARENT
+  ADMIN
+}
